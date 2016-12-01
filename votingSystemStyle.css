@@ -1,0 +1,48 @@
+body{
+	background-color: #e6f3f7;
+	padding: 50px;
+}
+
+.toolbar{
+	background-color: #0061A8;
+	color: white;
+	font-size: 24px;
+	font-weight: bolder;
+	margin-bottom: 20px;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.toolbar>p{
+	display:inline;
+}
+
+.navButton{
+	float: right;
+    display: inline;
+    margin: 3px;
+}
+
+.textBox{
+	background-color: #E0E0E0;
+	font-size: 14px;
+	margin-bottom: 10px;
+	padding: 20px;
+	border-radius: 5px;
+}
+
+h2{
+	text-align: center;
+	margin-top: 0px;
+}
+
+.listItem{
+	background-color: #E0E0E0;
+	padding: 10px 20px;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+.itemName{
+	display: inline;
+}

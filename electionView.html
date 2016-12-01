@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Election View</title>
+		<link rel="stylesheet" href="votingSystemStyle.css">
+        
+    </head>
+	<script src="electionBase.js"></script>
+	<script>
+			var electionTitle;
+			var electionType;
+			var genderPerm;
+			var collegePerm;
+			var rankPerm;
+			var candidates = [];
+	
+			function setTitle(){
+				if(document.getElementById("titleInput").value != ""){
+					electionTitle = document.getElementById("titleInput").value;
+					document.getElementById("electionTitle").innerHTML = electionTitle;
+					document.getElementById("enterTitleBlock").hidden = true;
+					document.getElementById("changeTitleBlock").hidden = false;
+				}
+			}
+			
+			function changeTitle(){
+				document.getElementById("changeTitleBlock").hidden = true;
+				document.getElementById("enterTitleBlock").hidden = false;
+			}
+			
+			function addCandidate(){
+				var newCandidate = document.getElementById("candidateInput").value;
+				if(newCandidate != "" && candidates.indexOf(newCandidate) == -1){
+					candidates.push(document.getElementById("candidateInput").value);
+					document.getElementById("candidateInput").value = "";
+					buildCandidateDisplay();
+				}
+			}
+			
+			function removeCandidate(){
+				candidates.pop();
+				buildCandidateDisplay();
+			}
+			
+			function buildCandidateDisplay(){
+				document.getElementById("candidateDisplay").innerHTML = "";
+				for(i = 0; i < candidates.length; i++){
+					document.getElementById("candidateDisplay").innerHTML += candidates[i] + "<br>";
+				}
+			}
+
+			function toggleType(){
+				if(document.getElementById('singleRadio').checked){
+					electionType = "single";
+					document.getElementById('candidatesContainer').hidden = false;
+				}else if(document.getElementById('multiRadio').checked){
+					electionType = "multi";
+					document.getElementById('candidatesContainer').hidden = false;
+				}else if(document.getElementById('writeInRadio').checked){
+					electionType = "writeIn";
+					document.getElementById('candidatesContainer').hidden = true;
+				}else if(document.getElementById('amendmentRadio').checked){
+					electionType = "amendment";
+					document.getElementById('candidatesContainer').hidden = true;
+				}
+			}
+
+			function continueToPermissions(){
+				if(electionTitle != "" && ((document.getElementById('singleRadio').checked && candidates.length >= 2) ||
+						(document.getElementById('multiRadio').checked && candidates.length >= 2) ||
+						document.getElementById('writeInRadio').checked ||
+						document.getElementById('amendmentRadio').checked)){
+
+					document.getElementById('continueError').innerHTML = "";
+					document.getElementById('modifyContainer').hidden = true;
+					document.getElementById('permissionsContainer').hidden = false;
+				}else{
+					document.getElementById('continueError').innerHTML = "Cannot continue without valid election parameters.";
+				}
+			}
+
+			function openElection(){
+				document.getElementById('permissionsContainer').hidden = true;
+				document.getElementById('electionOpen').hidden = false;
+
+				setGenderPermissions();
+				setCollegePermissions();
+				setRankPermissions();
+
+				createElection(electionTitle, electionType, candidates, genderPerm, collegePerm, rankPerm, "opened");
+			}
+
+			function closeElection(){
+				document.getElementById('electionOpen').hidden = true;
+				document.getElementById('electionClosed').hidden = false;
+				document.cookie = "openStatus=closed";
+			}
+
+			function setGenderPermissions(){
+				if(document.getElementById('allGenderRadio').checked){
+					genderPerm = "all";
+				}else if(document.getElementById('maleRadio').checked){
+					genderPerm = "male";
+				}else if(document.getElementById('femaleRadio').checked) {
+					genderPerm = "female";
+				}
+			}
+
+			function setCollegePermissions(){
+				if(document.getElementById('allCollegeRadio').checked){
+					collegePerm = "all";
+				}else if(document.getElementById('engineeringRadio').checked){
+					collegePerm = "engineering";
+				}else if(document.getElementById('artsRadio').checked) {
+					collegePerm = "arts";
+				}else if(document.getElementById('mediaRadio').checked){
+					collegePerm = "media";
+				}else if(document.getElementById('businessRadio').checked) {
+					collegePerm = "business";
+				}
+			}
+
+			function setRankPermissions(){
+				if(document.getElementById('allRankRadio').checked){
+					rankPerm = "all";
+				}else if(document.getElementById('freshmanRadio').checked){
+					rankPerm = "freshman";
+				}else if(document.getElementById('sophomoreRadio').checked) {
+					rankPerm = "sophmore";
+				}else if(document.getElementById('juniorRadio').checked){
+					rankPerm = "junior";
+				}else if(document.getElementById('seniorRadio').checked) {
+					rankPerm = "senior";
+				}
+			}
+	</script>
+	<style>
+		.textBox>p{
+			font-size: 18px;
+		}
+	</style>
+    <body>
+		<div class="toolbar">
+			<p>Election Commissioner - Election</p>
+			
+			<button class="navButton" onclick="location.href='ecResultsView.html';">Results</button>
+			<button class="navButton" onclick="location.href='electionView.html';">Election</button>
+			<button class="navButton" onclick="location.href='electComHome.html';">Home</button>
+		</div>
+
+		<div id="modifyContainer" class="textBox">
+			<h2>Modify Ballot</h2>
+		
+			<p>Election Title</p>
+			<div id="enterTitleBlock">
+				<input id="titleInput" type="text">
+				<button type="button" onclick="setTitle()">Enter</button>
+			</div>
+			<div id="changeTitleBlock" hidden=true>
+				<div id="electionTitle"></div>
+				<button type="button" onclick="changeTitle()">Change</button>
+			</div>	
+			<br><hr>
+			<p>Ballot Type</p>
+				<input type="radio" id="singleRadio" name="ballotType" value="single" onclick="toggleType()"> Single Vote<br>
+				<input type="radio" id="multiRadio" name="ballotType" value="multi" onclick="toggleType()"> Multi Vote<br>
+				<input type="radio" id="writeInRadio" name="ballotType" value="writeIn" onclick="toggleType()"> Write In<br>
+				<input type="radio" id="amendmentRadio" name="ballotType" value="amendment" onclick="toggleType()"> Amendment<br>
+			<div id="candidatesContainer" hidden=true>
+				<br><hr>
+				<p>Candidates</p>
+				<div id="candidateDisplay"></div>
+				<input id="candidateInput" type="text">
+				<button type="button" onclick="addCandidate()">Add</button>
+				<button type="button" onclick="removeCandidate()">Undo</button>
+			</div>
+			<br><br>
+			<button type="button" onclick="continueToPermissions()">Continue</button>
+			<div id="continueError"></div>
+		</div>
+		
+		<div id="permissionsContainer" class="textBox" hidden="true">
+			<h2>Modify Permissions</h2>
+			
+			<p>Gender Permissions</p>
+				<input type="radio" id="allGenderRadio" name="gender" value="all" checked="true"> All<br>
+				<input type="radio" id="maleRadio" name="gender" value="male"> Male<br>
+				<input type="radio" id="femaleRadio" name="gender" value="female"> Female<br>
+			<br><hr>
+			<p>College Permissions</p>
+				<input type="radio" id="allCollegeRadio" name="college" value="all" checked="true"> All<br>
+				<input type="radio" id="engineeringRadio" name="college" value="engineering"> Engineering<br>
+				<input type="radio" id="mediaRadio" name="college" value="media"> Media<br>
+				<input type="radio" id="artsRadio" name="college" value="arts"> Creative Arts<br>
+				<input type="radio" id="businessRadio" name="college" value="business"> Business<br>
+			<br><hr>
+			<p>Rank Permissions</p>
+				<input type="radio" id="allRankRadio" name="rank" value="all" checked="true"> All<br>
+				<input type="radio" id="freshmanRadio" name="rank" value="freshman"> Freshman<br>
+				<input type="radio" id="sophomoreRadio" name="rank" value="sophomore"> Sophomore<br>
+				<input type="radio" id="juniorRadio" name="rank" value="junior"> Junior<br>
+				<input type="radio" id="seniorRadio" name="rank" value="senior"> Senior<br>
+			<br><br>
+			<button type="button" onclick="openElection()">Open Election</button>
+			<div id="openError"></div>
+		</div>
+
+		<h2 id="electionOpen" class="textBox" hidden=true>
+			Your election is currently open.<br>
+			<button type="button" onclick="closeElection()">Close Election</button>
+		</h2>
+
+		<h2 id="electionClosed" class="textBox" hidden=true>
+			Your election has been closed.
+		</h2>
+    </body>
+</html>
